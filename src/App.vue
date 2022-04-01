@@ -1,16 +1,58 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
+  <div class="container">
+    <global-header :user="currentUser"></global-header>
+    <loader-item v-if="isLoading"></loader-item>
+    <router-view></router-view>
+    <global-footer></global-footer>
+  </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
-import HelloWorld from './components/HelloWorld.vue'
+import { computed, defineComponent, onMounted, watch } from 'vue'
+import { useStore } from 'vuex'
+import 'bootstrap/dist/css/bootstrap.min.css'
+import GlobalHeader from './components/GlobalHeader.vue'
+import GlobalFooter from './components/GlobalFooter.vue'
+import LoaderItem from './components/LoaderItem.vue'
+import creatrMessage from './components/createMessage'
+import axios from 'axios'
+import { GlobalDataProps } from './store'
 
 export default defineComponent({
   name: 'App',
+  setup () {
+    const store = useStore<GlobalDataProps>()
+    const currentUser = computed(() => store.state.user)
+    const isLoading = computed(() => store.state.loading)
+    const token = computed(() => store.state.token)
+    const error = computed(() => store.state.error)
+    onMounted(() => {
+      if (!currentUser.value.isLogin) {
+        if (store.state.token) {
+          axios.defaults.headers.common.Authorization = `Bearer ${token.value}`
+          store.dispatch('fetchCurrentUser')
+        }
+      }
+    })
+    watch(
+      () => error.value.status,
+      () => {
+        const { status, message } = error.value
+        if (status && message) {
+          creatrMessage(message, 'error')
+        }
+      }
+    )
+    return {
+      currentUser,
+      isLoading,
+      error
+    }
+  },
   components: {
-    HelloWorld
+    GlobalHeader,
+    GlobalFooter,
+    LoaderItem
   }
 })
 </script>
@@ -22,6 +64,7 @@ export default defineComponent({
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  margin-left: 60px;
+  margin-right: 60px;
 }
 </style>
