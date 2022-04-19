@@ -2,7 +2,7 @@
   <nav
     class="navbar navbar-expand-lg navbar-dark bg-primary justify-content-between mb-4 px-4"
   >
-    <router-link class="navbar-brand" to="/">源知乎专栏</router-link>
+    <router-link class="navbar-brand" to="/" name="top">源知乎专栏</router-link>
     <ul v-if="!user.isLogin" class="list-inline mb-0">
       <li class="list-inline-item">
         <router-link class="btn btn-primary my-2" to="/login" role="button"
@@ -21,6 +21,11 @@
           <dropdown-items>
             <router-link to="/createpost" class="dropdown-item"
               >新建文章</router-link
+            >
+          </dropdown-items>
+          <dropdown-items>
+            <router-link :to="`/column/${user.column}`" class="dropdown-item"
+              >我的专栏</router-link
             >
           </dropdown-items>
           <dropdown-items>

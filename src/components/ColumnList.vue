@@ -12,7 +12,6 @@
           <p class="card-text text-start">
             {{ column.description }}
           </p>
-          <!-- <router-link :to="{name: 'column', params: {id: column.id}}" class="btn btn-outline-primary">进入专栏</router-link> -->
           <router-link
             :to="`/column/${column._id}`"
             class="btn btn-outline-primary"
@@ -44,9 +43,7 @@ export default defineComponent({
           }
         } else {
           if (
-            !column.avatar.url.includes(
-              '?x-oss-process=image/resize,m_fixed,h_80,w_80'
-            )
+            !column.avatar.url.includes('?x-oss-process=image/resize,m_fixed')
           ) {
             column.avatar.url =
               column.avatar.url +

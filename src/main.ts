@@ -5,17 +5,18 @@ import axios from 'axios'
 import App from './App.vue'
 
 // 替换 baseURL
+const icode = 'FC293643922EC890' // 项目接口校验码
 axios.defaults.baseURL = 'https://apis.imooc.com/api/'
 axios.interceptors.request.use((config) => {
   // get 请求，添加到 url 中
-  config.params = { ...config.params, icode: 'AA5BFD8263721C73' }
+  config.params = { ...config.params, icode: icode }
   // 其他请求，添加到 body 中
   // 如果是上传文件，添加到 FormData 中
   if (config.data instanceof FormData) {
-    config.data.append('icode', 'AA5BFD8263721C73')
+    config.data.append('icode', icode)
   } else {
     // 普通的 body 对象，添加到 data 中
-    config.data = { ...config.data, icode: 'AA5BFD8263721C73' }
+    config.data = { ...config.data, icode: icode }
   }
   store.commit('setLoading', true) // 在拦截器中添加 loading
   store.commit('setError', { status: false, message: '' }) // 发送请求时把错误重置

@@ -1,5 +1,5 @@
 <template>
-  <div class="login-page mx-auto p-3 w-330">
+  <div class="login-page mx-auto p-3 w-50">
     <validate-form @form-submit="onFormSubmit">
       <div class="mb-1">
         <div class="form-label text-start fw-bold fs-4">邮箱地址</div>
@@ -25,7 +25,7 @@
         <div class="form-check-label text-start">记住密码</div>
       </div>
       <template #submit>
-        <button type="submit" class="btn btn-primary" >登录</button>
+        <button type="submit" class="btn btn-primary col-12" >登录</button>
       </template>
     </validate-form>
   </div>

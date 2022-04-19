@@ -2,9 +2,11 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from './views/HomeView.vue'
 import LoginView from './views/LoginView.vue'
 import SignUpView from './views/SignUpView.vue'
-import ColumDetail from './components/ColumDetail.vue'
+import ColumDetail from './views/ColumDetail.vue'
+import PostDetail from './views/PostDetail.vue'
 import CreatePost from './views/CreatePost.vue'
 import store from './store'
+import axios from 'axios'
 
 const routerHistory = createWebHistory()
 const router = createRouter({
@@ -24,9 +26,9 @@ const router = createRouter({
       }
     },
     {
-      path: '/test/:id',
-      name: 'test',
-      component: ColumDetail
+      path: '/post/:id',
+      name: 'post',
+      component: PostDetail
     },
     {
       path: '/column/:id',
@@ -50,11 +52,38 @@ const router = createRouter({
 })
 router.beforeEach((to, from, next) => {
   // 创建全局前置守卫
-  if (to.meta.requiredLogin && !store.state.user.isLogin) {
-    next('/login')
-  } else if (to.meta.redirectAlreadyLogin && store.state.user.isLogin) {
-    next('/')
-  } else next()
+  const { user, token } = store.state
+  const { requiredLogin, redirectAlreadyLogin } = to.meta
+  if (!user.isLogin) {
+    if (token) {
+      axios.defaults.headers.common.Authorization = `Bearer ${token}`
+      store.dispatch('fetchCurrentUser').then(() => {
+        if (redirectAlreadyLogin) {
+          next('/')
+        } else {
+          document.documentElement.scrollTop = 0 // 路由跳转回到页面顶部
+          next()
+        }
+      }).catch(() => {
+        store.commit('logOut')
+        next('/login')
+      })
+    } else {
+      if (requiredLogin) {
+        next('/login')
+      } else {
+        document.documentElement.scrollTop = 0
+        next()
+      }
+    }
+  } else {
+    if (redirectAlreadyLogin) {
+      next('/')
+    } else {
+      document.documentElement.scrollTop = 0
+      next()
+    }
+  }
 })
 
 export default router

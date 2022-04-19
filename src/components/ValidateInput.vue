@@ -4,19 +4,17 @@
       v-if="tag !== 'textarea'"
       class="form-control"
       :class="{ 'is-invalid': inputRef.error }"
-      :value="inputRef.val"
       @blur="validateInput"
-      @input="updateValue"
       v-bind="$attrs"
+      v-model="inputRef.val"
     />
     <textarea
       v-else
       class="form-control"
       :class="{ 'is-invalid': inputRef.error }"
-      :value="inputRef.val"
       @blur="validateInput"
-      @input="updateValue"
       v-bind="$attrs"
+      v-model="inputRef.val"
     ></textarea>
     <span v-if="inputRef.error" class="invalid-feedback text-start">{{
       inputRef.message
@@ -25,7 +23,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, reactive, onMounted } from 'vue'
+import { defineComponent, PropType, reactive, onMounted, computed } from 'vue'
 import { emitter } from './ValidataForm.vue'
 const emailReg =
   /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
@@ -49,7 +47,12 @@ export default defineComponent({
   inheritAttrs: false, // 组件的根元素不继承属性组件的属性
   setup (props, context) {
     const inputRef = reactive({
-      val: props.modelValue || '',
+      val: computed({
+        get: () => props.modelValue || '',
+        set: (val) => {
+          context.emit('update:modelValue', val)
+        }
+      }),
       error: false,
       message: ''
     })
@@ -69,7 +72,6 @@ export default defineComponent({
               passed = passwordReg.test(inputRef.val)
               break
             case 'custom': // 用户自定义规则
-              // TODO
               passed = rule.validator ? rule.validator() : true
               break
             default:
@@ -90,11 +92,6 @@ export default defineComponent({
       }
       return true
     }
-    const updateValue = (e: KeyboardEvent) => {
-      const targetValue = (e.target as HTMLInputElement).value
-      inputRef.val = targetValue
-      context.emit('update:modelValue', targetValue)
-    }
     onMounted(() => {
       emitter.emit('form-item-created', validateInput)
       emitter.emit('form-items-claer', clearInputs)
@@ -102,7 +99,6 @@ export default defineComponent({
     return {
       inputRef,
       validateInput,
-      updateValue,
       clearInputs
     }
   }

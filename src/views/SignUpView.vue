@@ -1,6 +1,5 @@
 <template>
-  <div class="singup-page mx-auto p-3 w-330">
-    <!-- TODO -->
+  <div class="singup-page mx-auto p-3 w-50">
     <validata-form @form-submit="onFormSubmit">
       <div class="mb-1">
         <div class="form-label text-start fw-bold fs-4">邮箱地址</div>
@@ -41,7 +40,7 @@
         />
       </div>
       <template #submit>
-        <button type="submit" class="btn btn-primary">注册</button>
+        <button type="submit" class="btn btn-primary col-12">注册</button>
       </template>
     </validata-form>
   </div>
