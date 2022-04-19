@@ -8,7 +8,7 @@ import CreatePost from './views/CreatePost.vue'
 import store from './store'
 import axios from 'axios'
 
-const routerHistory = createWebHistory()
+const routerHistory = createWebHistory('/yuanzhihu/')
 const router = createRouter({
   history: routerHistory,
   routes: [
