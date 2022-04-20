@@ -58,9 +58,12 @@ import ValidataForm from '@/components/ValidataForm.vue'
 import ValidateInput, { RulesProp } from '@/components/ValidateInput.vue'
 import UpLoader from '../components/UpLoader.vue'
 import createMessage from '../components/createMessage'
-import { ResponseType, ImageProps, GlobalDataProps, PostProps } from '../store'
-import { defineComponent, ref, onMounted, watch } from 'vue'
-import { useStore } from 'vuex'
+// import { ResponseType, ImageProps, GlobalDataProps, PostProps } from '../store'
+import { defineComponent, ref, onMounted } from 'vue'
+// import { useStore } from 'vuex'
+import { usePostsStore, ResponseType, PostProps } from '../stores/posts'
+import { useUserStore } from '../stores/user'
+import { ImageProps } from '../stores/colums'
 import { useRouter, useRoute } from 'vue-router'
 import axios from 'axios'
 export default defineComponent({
@@ -72,12 +75,15 @@ export default defineComponent({
     const isEditMode = !!route.query.id
     const titleVal = ref()
     const contentVal = ref()
-    const store = useStore<GlobalDataProps>()
+    // TODO
+    // const store = useStore<GlobalDataProps>()
+    const storePosts = usePostsStore()
+    const storeUsers = useUserStore()
     let imageId = ''
     onMounted(() => {
       if (isEditMode) {
-        store
-          .dispatch('fetchPost', route.query.id)
+        storePosts
+          .fetchPost(route.query.id as string)
           .then((rawDate: ResponseType<PostProps>) => {
             const postDetail = rawDate.data
             if (postDetail.image) {
@@ -100,7 +106,7 @@ export default defineComponent({
       }
     }
     const onFormSubmit = (result: boolean) => {
-      const { column, _id } = store.state.user
+      const { column, _id } = storeUsers.user
       if (column && result) {
         const newPost: PostProps = {
           title: titleVal.value,
@@ -118,10 +124,10 @@ export default defineComponent({
               payload: newPost
             }
           : newPost
-        store.dispatch(actionName, sendDate).then(() => {
+        storePosts[actionName](sendDate).then(({ data }) => {
           createMessage('发表成功，2秒后跳转到文章', 'success')
           setTimeout(() => {
-            router.push({ name: 'column', params: { id: column } })
+            router.push({ name: 'post', params: { id: data._id } })
           }, 2000)
         })
       }

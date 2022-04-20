@@ -5,7 +5,8 @@ import SignUpView from './views/SignUpView.vue'
 import ColumDetail from './views/ColumDetail.vue'
 import PostDetail from './views/PostDetail.vue'
 import CreatePost from './views/CreatePost.vue'
-import store from './store'
+// import store from './store'
+import { useUserStore } from './stores/user'
 import axios from 'axios'
 
 const routerHistory = createWebHistory('/yuanzhihu')
@@ -52,12 +53,13 @@ const router = createRouter({
 })
 router.beforeEach((to, from, next) => {
   // 创建全局前置守卫
-  const { user, token } = store.state
+  const store = useUserStore()
+  const { user, token } = store
   const { requiredLogin, redirectAlreadyLogin } = to.meta
   if (!user.isLogin) {
     if (token) {
       axios.defaults.headers.common.Authorization = `Bearer ${token}`
-      store.dispatch('fetchCurrentUser').then(() => {
+      store.fetchCurrentUser().then(() => {
         if (redirectAlreadyLogin) {
           next('/')
         } else {
@@ -65,7 +67,7 @@ router.beforeEach((to, from, next) => {
           next()
         }
       }).catch(() => {
-        store.commit('logOut')
+        store.logOut()
         next('/login')
       })
     } else {

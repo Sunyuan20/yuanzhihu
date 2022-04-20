@@ -16,7 +16,8 @@
 
 <script lang="ts">
 import { computed, defineComponent, PropType } from 'vue'
-import { UserProps } from '../store'
+// import { UserProps } from '../store'
+import { UserProps } from '../stores/user'
 export default defineComponent({
   props: {
     user: {

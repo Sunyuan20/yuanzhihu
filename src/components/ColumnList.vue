@@ -25,7 +25,8 @@
 
 <script lang="ts">
 import { defineComponent, PropType, computed } from 'vue'
-import { ColumnProps } from '../store'
+// import { ColumnProps } from '../store'
+import { ColumnProps } from '../stores/colums'
 export default defineComponent({
   name: 'ColumnList',
   props: {

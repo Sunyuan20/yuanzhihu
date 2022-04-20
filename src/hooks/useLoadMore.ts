@@ -1,4 +1,6 @@
-import { useStore } from 'vuex'
+// import { useStore } from 'vuex'
+import { usePostsStore } from '@/stores/posts'
+import { useColumnsStore } from '@/stores/colums'
 import { ref, computed, ComputedRef } from 'vue'
 
 interface LoadParams {
@@ -11,7 +13,8 @@ const useLoadMore = (
   params: LoadParams = { currentPage: 2, pageSize: 5 },
   extraData?: any
 ) => {
-  const store = useStore()
+  const storeColumns = useColumnsStore()
+  const storePosts = usePostsStore()
   const currentPage = ref(params.currentPage)
   const pageSize = ref(params.pageSize)
   const requestParams = computed(() => ({
@@ -20,13 +23,13 @@ const useLoadMore = (
   }))
   const loadMorePage = () => {
     if (extraData) {
-      store
-        .dispatch(actionName, { cid: extraData, params: requestParams.value })
+      storePosts
+        .fetchPosts({ cid: extraData, params: requestParams.value })
         .then(() => {
           currentPage.value++
         })
     } else {
-      store.dispatch(actionName, requestParams.value).then(() => {
+      storeColumns.fetchColumns(requestParams.value).then(() => {
         currentPage.value++
       })
     }

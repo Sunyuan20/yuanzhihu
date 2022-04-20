@@ -27,7 +27,9 @@
 <script lang="ts">
 import { defineComponent, onMounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
-import store from '../store'
+// import store from '../store'
+import { useColumnsStore } from '../stores/colums'
+import { usePostsStore } from '../stores/posts'
 import PostList from '../components/PostList.vue'
 import useLoadMore from '../hooks/useLoadMore'
 export default defineComponent({
@@ -35,20 +37,22 @@ export default defineComponent({
   setup () {
     const route = useRoute()
     const currentId = route.params.id as string
+    const storeColums = useColumnsStore()
+    const storePosts = usePostsStore()
     onMounted(() => {
-      store.dispatch('fetchColumn', currentId)
-      store.dispatch('fetchPosts', { cid: currentId, params: { pageSize: 4 } })
+      storeColums.fetchColumn(currentId)
+      storePosts.fetchPosts({ cid: currentId, params: { pageSize: 4 } })
     })
     const total = computed(() => {
-      if (store.state.posts.loadedColumns[currentId]) {
-        return store.state.posts.loadedColumns[currentId].total
+      if (storePosts.posts.loadedColumns[currentId]) {
+        return storePosts.posts.loadedColumns[currentId].total
       } else {
         return 0
       }
     })
     const currentPage = computed(() => {
-      if (store.state.posts.loadedColumns[currentId]) {
-        return store.state.posts.loadedColumns[currentId].currentPage
+      if (storePosts.posts.loadedColumns[currentId]) {
+        return storePosts.posts.loadedColumns[currentId].currentPage
       } else {
         return 0
       }
@@ -62,12 +66,12 @@ export default defineComponent({
       },
       currentId
     )
-    const column = computed(() => store.getters.getColumnById(currentId))
-    const list = computed(() => store.getters.getPostsByCid(currentId))
+    const column = computed(() => storeColums.getColumnById(currentId))
+    const list = computed(() => storePosts.getPostsByCid(currentId))
     const columnAvatar = computed(() => {
-      if (column.value) {
+      if (column.value?.avatar) {
         if (
-          !column.value.avatar.url.includes(
+          !column.value.avatar.url?.includes(
             '?x-oss-process=image/resize,m_fixed'
           )
         ) {

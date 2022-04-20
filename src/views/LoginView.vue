@@ -37,13 +37,15 @@ import ValidateInput, { RulesProp } from '../components/ValidateInput.vue'
 import ValidateForm from '../components/ValidataForm.vue'
 import creatrMessage from '../components/createMessage'
 import { useRouter } from 'vue-router'
-import { useStore } from 'vuex'
-import { GlobalDataProps } from '@/store'
+// import { useStore } from 'vuex'
+// import { GlobalDataProps } from '@/store'
+import { useUserStore } from '../stores/user'
 
 export default defineComponent({
   name: 'LoginView',
   setup () {
-    const store = useStore<GlobalDataProps>()
+    // const store = useStore<GlobalDataProps>()
+    const store = useUserStore()
     const router = useRouter()
     const emailVal = ref('')
     const passwordVal = ref('')
@@ -64,8 +66,7 @@ export default defineComponent({
           email: emailVal.value,
           password: passwordVal.value
         }
-        store
-          .dispatch('loginAndFetch', payload)
+        store.loginAndFetch(payload)
           .then(() => {
             creatrMessage('登陆成功！2秒后跳转首页', 'success')
             setTimeout(() => {

@@ -46,7 +46,9 @@
 </template>
 
 <script lang="ts">
-import store, { UserProps, ResponseType, PostProps } from '@/store'
+// import store, { UserProps, ResponseType, PostProps } from '@/store'
+import { usePostsStore, PostProps, ResponseType } from '../stores/posts'
+import { useUserStore, UserProps } from '../stores/user'
 import { computed, defineComponent, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import MarkDownIt from 'markdown-it'
@@ -58,15 +60,17 @@ export default defineComponent({
   setup () {
     const route = useRoute()
     const router = useRouter()
-    const currentPostId = route.params.id
+    const currentPostId = route.params.id as string
+    const storePosts = usePostsStore()
+    const storeUser = useUserStore()
     const modalIsVisible = ref(false)
     const md = new MarkDownIt()
     onMounted(() => {
-      store.dispatch('fetchPost', currentPostId)
+      storePosts.fetchPost(currentPostId)
     })
-    const postDetail = computed(() => store.getters.getCurrentPost(currentPostId))
+    const postDetail = computed(() => storePosts.getCurrentPost(currentPostId))
     const postImage = computed(() => {
-      if (!postDetail?.value.image) {
+      if (!postDetail.value?.image) {
         return require('@/assets/EldenRing.jpeg')
       } else {
         return postDetail.value.image.url as string
@@ -82,7 +86,7 @@ export default defineComponent({
       }
     })
     const showEditArea = computed(() => {
-      const { isLogin, _id } = store.state.user
+      const { isLogin, _id } = storeUser.user
       if (postDetail.value?.author && isLogin) {
         const postAuthor = postDetail.value.author as UserProps
         return postAuthor._id === _id
@@ -92,12 +96,14 @@ export default defineComponent({
     })
     const hideAndDelete = () => {
       modalIsVisible.value = false
-      store.dispatch('deletePost', currentPostId).then((rawData: ResponseType<PostProps>) => {
-        createMessage('删除成功，两秒之后跳转到专栏首页', 'success', 2000)
-        setTimeout(() => {
-          router.push({ name: 'column', params: { id: rawData.data.column } })
-        }, 2000)
-      })
+      storePosts
+        .deletePost(currentPostId)
+        .then((rawData: ResponseType<PostProps>) => {
+          createMessage('删除成功，两秒之后跳转到专栏首页', 'success', 2000)
+          setTimeout(() => {
+            router.push({ name: 'column', params: { id: rawData.data.column } })
+          }, 2000)
+        })
     }
     return {
       postDetail,

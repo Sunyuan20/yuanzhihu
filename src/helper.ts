@@ -1,3 +1,5 @@
+import axios, { AxiosRequestConfig } from 'axios'
+
 export const arrToObj = <T extends { _id?: string }>(arr: Array<T>) => {
   return arr.reduce((prev, current) => {
     if (current._id) {
@@ -8,5 +10,13 @@ export const arrToObj = <T extends { _id?: string }>(arr: Array<T>) => {
 }
 
 export const objToArr = <T>(obj: { [key: string]: T }) => {
-  return Object.keys(obj).map(key => obj[key])
+  return Object.keys(obj).map((key) => obj[key])
+}
+
+export const asyncAxios = async (
+  url: string,
+  config: AxiosRequestConfig = { method: 'get' }
+) => {
+  const { data } = await axios(url, config)
+  return data
 }

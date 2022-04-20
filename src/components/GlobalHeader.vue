@@ -17,7 +17,7 @@
     </ul>
     <ul v-else class="list-inline mb-0">
       <li class="list-inline-item">
-        <dropdown :title="`你好 ${user.nickName}`">
+        <dropdown :title="`你好 ${user.nickName}`" class="my-2">
           <dropdown-items>
             <router-link to="/createpost" class="dropdown-item"
               >新建文章</router-link
@@ -46,7 +46,8 @@
 import { defineComponent, PropType } from 'vue'
 import Dropdown from './Dropdown.vue'
 import DropdownItems from './DropdownItems.vue'
-import store, { UserProps } from '../store'
+// import store, { UserProps } from '../store'
+import { useUserStore, UserProps } from '../stores/user'
 import { useRouter } from 'vue-router'
 
 export default defineComponent({
@@ -63,8 +64,9 @@ export default defineComponent({
   },
   setup () {
     const router = useRouter()
+    const store = useUserStore()
     const clickLogOut = () => {
-      store.commit('logOut')
+      store.logOut()
       router.go(0)
     }
     return {

@@ -9,21 +9,25 @@
 
 <script lang="ts">
 import { computed, defineComponent, watch } from 'vue'
-import { useStore } from 'vuex'
+// import { useStore } from 'vuex'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import GlobalHeader from './components/GlobalHeader.vue'
 import GlobalFooter from './components/GlobalFooter.vue'
 import LoaderItem from './components/LoaderItem.vue'
 import creatrMessage from './components/createMessage'
-import { GlobalDataProps } from './store'
+// import { GlobalDataProps } from './store'
+import { useUserStore } from './stores/user'
+import { useErrorAndLoadStore } from './stores/errorAndLoad'
 
 export default defineComponent({
   name: 'App',
   setup () {
-    const store = useStore<GlobalDataProps>()
-    const currentUser = computed(() => store.state.user)
-    const isLoading = computed(() => store.state.loading)
-    const error = computed(() => store.state.error)
+    // const store = useStore<GlobalDataProps>()
+    const storeUser = useUserStore()
+    const storeErrorAndLoad = useErrorAndLoadStore()
+    const currentUser = computed(() => storeUser.user)
+    const isLoading = computed(() => storeErrorAndLoad.loading)
+    const error = computed(() => storeErrorAndLoad.error)
     watch(
       () => error.value.status,
       () => {
