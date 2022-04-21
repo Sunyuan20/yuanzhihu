@@ -45,7 +45,6 @@ export const useUserStore = defineStore('user', {
     },
     async fetchCurrentUser () {
       const rawData = await asyncAxios('/user/current')
-      console.log(rawData)
       this.user = { isLogin: true, ...rawData.data }
     },
     async loginAndFetch (payload: object) {
