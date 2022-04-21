@@ -73,9 +73,6 @@ export default defineComponent({
               router.push('/')
             }, 2000)
           })
-          .catch((e) => {
-            console.log(e)
-          })
       }
     }
     return {

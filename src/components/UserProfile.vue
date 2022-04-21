@@ -8,7 +8,7 @@
           {{ user.nickName }}
         </div>
         <div class="text-start text-secondary">
-          {{ user.description }}
+          {{ user.description? user.description: '这个用户现在还没有简介哦~'}}
         </div>
       </div>
     </div>
@@ -28,7 +28,7 @@ export default defineComponent({
   setup (props) {
     const userAvatar = computed(() => {
       if (!props.user.avatar?.url) {
-        return require('@/assets/column.jpg')
+        return require('@/assets/userDefault.jpg')
       } else {
         if (!props.user.avatar?.url.includes('?x-oss-process=image/resize,m_fixed')) {
           return props.user.avatar?.url + '?x-oss-process=image/resize,m_fixed,h_50,w_50'

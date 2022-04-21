@@ -84,7 +84,6 @@ export default defineComponent({
             }
           })
           .then((res) => {
-            console.log(res.data)
             fileStatus.value = 'success'
             uploadedData.value = res.data
             context.emit('file-uploaded', res.data)

@@ -38,13 +38,13 @@ export default defineComponent({
   setup (props) {
     const columnList = computed(() => {
       return props.list.map((column) => {
-        if (!column.avatar?.url) {
+        if (!column.avatar?._id) {
           column.avatar = {
             url: require('@/assets/column.jpg')
           }
         } else {
           if (
-            !column.avatar.url.includes('?x-oss-process=image/resize,m_fixed')
+            !column.avatar.url?.includes('?x-oss-process=image/resize,m_fixed')
           ) {
             column.avatar.url =
               column.avatar.url +

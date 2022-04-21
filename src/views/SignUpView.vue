@@ -52,7 +52,7 @@ import ValidateInput, { RulesProp } from '../components/ValidateInput.vue'
 import createMessage from '../components/createMessage'
 import { defineComponent, reactive } from 'vue'
 import { useRouter } from 'vue-router'
-import axios from 'axios'
+import { useUserStore } from '../stores/user'
 export interface formDataProps {
   email: string
   nickName: string
@@ -61,6 +61,7 @@ export interface formDataProps {
 }
 export default defineComponent({
   setup () {
+    const store = useUserStore()
     const formData = reactive<formDataProps>({
       email: '',
       nickName: '',
@@ -77,7 +78,10 @@ export default defineComponent({
     ]
     const passwordRules: RulesProp = [
       { type: 'required', message: '密码不能为空' },
-      { type: 'password', message: '密码长度在6-15位之间' }
+      {
+        type: 'password',
+        message: '密码长度在6-15位之间,且只能是数字和字母的组合'
+      }
     ]
     const repeatPasswordRules: RulesProp = [
       { type: 'required', message: '请再次输入密码' },
@@ -89,23 +93,18 @@ export default defineComponent({
         }
       }
     ]
-    const onFormSubmit = async (result: boolean) => {
+    const onFormSubmit = (result: boolean) => {
       if (result) {
         const payload = {
           email: formData.email,
           password: formData.password,
           nickName: formData.nickName
         }
-        try {
-          const { data } = await axios.post('/users', payload)
-          createMessage('注册成功！正在跳转登陆页面', 'success')
-          setTimeout(() => {
-            console.log(data)
-            router.push('/login')
-          }, 2000)
-        } catch (e) {
-          console.log(e)
-        }
+        store.signUp(payload)
+        createMessage('注册成功！正在跳转登陆页面', 'success')
+        setTimeout(() => {
+          router.push('/login')
+        }, 2000)
       }
     }
     return {

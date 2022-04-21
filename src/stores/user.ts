@@ -27,6 +27,7 @@ export const useUserStore = defineStore('user', {
   actions: {
     logOut () {
       this.token = ''
+      this.user = { isLogin: false }
       localStorage.setItem('token', '')
       delete axios.defaults.headers.common.Authorization
     },
@@ -44,6 +45,7 @@ export const useUserStore = defineStore('user', {
     },
     async fetchCurrentUser () {
       const rawData = await asyncAxios('/user/current')
+      console.log(rawData)
       this.user = { isLogin: true, ...rawData.data }
     },
     async loginAndFetch (payload: object) {
@@ -51,6 +53,12 @@ export const useUserStore = defineStore('user', {
       await this.login(payload)
       // 然后更新当前用户
       await this.fetchCurrentUser
+    },
+    async signUp (payload: object) {
+      const rawData = await asyncAxios('/users', {
+        method: 'post',
+        data: payload
+      })
     }
   }
 })

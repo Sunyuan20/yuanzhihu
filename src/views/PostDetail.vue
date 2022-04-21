@@ -12,24 +12,24 @@
       :src="postImage"
       class="header-image-container mb-3 d-flex align-items-center justify-content-center bg-light text-secondary w-100 my-4"
     />
-    <h4 class="fw-bold text-start mb-3">{{ postDetail.title }}</h4>
+    <h4 class="fw-bold text-start mb-3">{{ postDetail?.title }}</h4>
     <div
       class="user-profile-component border-top border-bottom py-3 mb-5 align-items-center row g-0"
     >
       <div class="col">
         <user-profile
-          :user="postDetail.author"
-          v-if="typeof postDetail.author === 'object'"
+          :user="postDetail?.author"
+          v-if="typeof postDetail?.author === 'object'"
         ></user-profile>
       </div>
       <span class="text-muted col text-end font-italic"
-        >发表于：{{ postDetail.createdAt }}</span
+        >发表于：{{ postDetail?.createdAt }}</span
       >
     </div>
     <div class="my-4 text-start" v-html="postContent"></div>
     <div v-if="showEditArea" class="btn-group mt-5">
       <router-link
-        :to="{ name: 'createpost', query: { id: postDetail._id } }"
+        :to="{ name: 'createpost', query: { id: postDetail?._id } }"
         type="button"
         class="btn btn-success"
         >编辑</router-link
@@ -49,7 +49,7 @@
 // import store, { UserProps, ResponseType, PostProps } from '@/store'
 import { usePostsStore, PostProps, ResponseType } from '../stores/posts'
 import { useUserStore, UserProps } from '../stores/user'
-import { computed, defineComponent, onMounted, ref } from 'vue'
+import { computed, defineComponent, ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import MarkDownIt from 'markdown-it'
 import UserProfile from '../components/UserProfile.vue'

@@ -3,7 +3,7 @@
     class="navbar navbar-expand-lg navbar-dark bg-primary justify-content-between mb-4 px-4"
   >
     <router-link class="navbar-brand" to="/" name="top">源知乎专栏</router-link>
-    <ul v-if="!user.isLogin" class="list-inline mb-0">
+    <ul v-if="!isLogin" class="list-inline mb-0">
       <li class="list-inline-item">
         <router-link class="btn btn-primary my-2" to="/login" role="button"
           >登录</router-link
@@ -43,7 +43,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue'
+import { computed, defineComponent, PropType } from 'vue'
 import Dropdown from './Dropdown.vue'
 import DropdownItems from './DropdownItems.vue'
 // import store, { UserProps } from '../store'
@@ -65,12 +65,14 @@ export default defineComponent({
   setup () {
     const router = useRouter()
     const store = useUserStore()
+    const isLogin = computed(() => store.user.isLogin)
     const clickLogOut = () => {
       store.logOut()
-      router.go(0)
+      router.push('/')
     }
     return {
-      clickLogOut
+      clickLogOut,
+      isLogin
     }
   }
 })

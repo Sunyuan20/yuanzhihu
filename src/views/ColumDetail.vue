@@ -9,8 +9,8 @@
         />
       </div>
       <div class="col-9">
-        <h4 class="text-start">{{ column && column.title }}</h4>
-        <p class="text-muted text-start">{{ column && column.description }}</p>
+        <h4 class="text-start">{{ column?.title }}</h4>
+        <p class="text-muted text-start">{{ column?.description }}</p>
       </div>
     </div>
     <post-list :list="list"></post-list>
@@ -69,7 +69,7 @@ export default defineComponent({
     const column = computed(() => storeColums.getColumnById(currentId))
     const list = computed(() => storePosts.getPostsByCid(currentId))
     const columnAvatar = computed(() => {
-      if (column.value?.avatar) {
+      if (column.value?.avatar?._id) {
         if (
           !column.value.avatar.url?.includes(
             '?x-oss-process=image/resize,m_fixed'
@@ -83,7 +83,7 @@ export default defineComponent({
           return column.value.avatar.url
         }
       } else {
-        return undefined
+        return require('@/assets/column.jpg')
       }
     })
     return {
