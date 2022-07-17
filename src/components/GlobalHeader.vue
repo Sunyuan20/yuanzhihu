@@ -29,7 +29,9 @@
             >
           </dropdown-items>
           <dropdown-items>
-            <a href="#" class="dropdown-item">编辑资料</a>
+            <router-link :to="`/edit/${user._id}`" class="dropdown-item"
+              >编辑资料</router-link
+            >
           </dropdown-items>
           <dropdown-items>
             <a href="#" class="dropdown-item" @click.prevent="clickLogOut"

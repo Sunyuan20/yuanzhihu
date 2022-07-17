@@ -54,7 +54,7 @@ export const useUserStore = defineStore('user', {
       await this.fetchCurrentUser
     },
     async signUp (payload: object) {
-      const rawData = await asyncAxios('/users', {
+      await asyncAxios('/users', {
         method: 'post',
         data: payload
       })

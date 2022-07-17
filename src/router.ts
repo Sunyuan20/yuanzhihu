@@ -5,6 +5,7 @@ import SignUpView from './views/SignUpView.vue'
 import ColumDetail from './views/ColumDetail.vue'
 import PostDetail from './views/PostDetail.vue'
 import CreatePost from './views/CreatePost.vue'
+import EditUser from './views/EditUser.vue'
 // import store from './store'
 import { useUserStore } from './stores/user'
 import axios from 'axios'
@@ -48,6 +49,14 @@ const router = createRouter({
       meta: {
         requiredLogin: true
       }
+    },
+    {
+      path: '/edit/:id',
+      name: 'edit',
+      component: EditUser,
+      meta: {
+        requiredLogin: true
+      }
     }
   ]
 })
@@ -59,17 +68,20 @@ router.beforeEach((to, from, next) => {
   if (!user.isLogin) {
     if (token) {
       axios.defaults.headers.common.Authorization = `Bearer ${token}`
-      store.fetchCurrentUser().then(() => {
-        if (redirectAlreadyLogin) {
-          next('/')
-        } else {
-          document.documentElement.scrollTop = 0 // 路由跳转回到页面顶部
-          next()
-        }
-      }).catch(() => {
-        store.logOut()
-        next('/login')
-      })
+      store
+        .fetchCurrentUser()
+        .then(() => {
+          if (redirectAlreadyLogin) {
+            next('/')
+          } else {
+            document.documentElement.scrollTop = 0 // 路由跳转回到页面顶部
+            next()
+          }
+        })
+        .catch(() => {
+          store.logOut()
+          next('/login')
+        })
     } else {
       if (requiredLogin) {
         next('/login')

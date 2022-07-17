@@ -7,7 +7,7 @@ import axios from 'axios'
 import App from './App.vue'
 
 // 替换 baseURL
-const icode = 'FC293643922EC890' // 项目接口校验码
+const icode = 'EF3FD4098EFDA497' // 项目接口校验码
 const app = createApp(App)
 setupStore(app)
 const store = useErrorAndLoadStore()
